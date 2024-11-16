@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Jood Loyalty Program Calculator</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            text-align: left;
+            direction: ltr;
+        }
+        .calculator {
+            border: 2px solid #333;
+            border-radius: 5px;
+            padding: 20px;
+            width: 300px;
+            text-align: center;
+        }
+        select, input {
+            width: 100%;
+            margin: 5px 0;
+            padding: 8px;
+            font-size: 1em;
+        }
+        .result {
+            margin-top: 10px;
+            font-size: 1.2em;
+        }
+    </style>
+</head>
+<body>
+
+<div class="calculator">
+    <h3>Jood Loyalty Program Calculator</h3>
+
+    <div id="sectionsContainer">
+        <div class="section">
+            <label>Select Section:</label>
+            <select class="section-select">
+                <option value="accessories">Accessories</option>
+                <option value="small_appliances">Small Appliances</option>
+                <option value="computers">Computers & Accessories</option>
+                <option value="large_appliances">Large Appliances</option>
+                <option value="screens">Screens & Accessories</option>
+                <option value="smart_home">Smart Home Devices</option>
+                <option value="gaming_devices">Gaming Devices & Accessories</option>
+                <option value="mobiles">Mobiles & Accessories</option>
+                <option value="extra_services">Extra Services</option>
+            </select>
+
+            <label>Enter Amount:</label>
+            <input type="number" placeholder="Amount" min="0" class="amount-input">
+        </div>
+    </div>
+
+    <button onclick="addSection()">Add Another Section</button>
+    <button onclick="calculateDiscount()">Calculate</button>
+
+    <div class="result">
+        <p>Total Gold Discount: <span id="totalDiscountGold">0</span> SAR</p>
+        <p>Amount after Gold Discount: <span id="totalAmountGold">0</span> SAR</p>
+        <hr>
+        <p>Total Blue Discount: <span id="totalDiscountBlue">0</span> SAR</p>
+        <p>Amount after Blue Discount: <span id="totalAmountBlue">0</span> SAR</p>
+    </div>
+</div>
+
+<script>
+    const discounts = {
+        blue: { accessories: 0.02, small_appliances: 0.02, computers: 0.02, large_appliances: 0.02, screens: 0.02, smart_home: 0.02, gaming_devices: 0.02, mobiles: 0.02, extra_services: 0.10 },
+        gold: { accessories: 0.15, small_appliances: 0.07, computers: 0.05, large_appliances: 0.05, screens: 0.05, smart_home: 0.05, gaming_devices: 0.02, mobiles: 0.02, extra_services: 0.15 }
+    };
+
+    function addSection() {
+        const container = document.getElementById("sectionsContainer");
+        const newSection = document.createElement("div");
+        newSection.classList.add("section");
+        newSection.innerHTML = `
+            <label>Select Section:</label>
+            <select class="section-select">
+                <option value="accessories">Accessories</option>
+                <option value="small_appliances">Small Appliances</option>
+                <option value="computers">Computers & Accessories</option>
+                <option value="large_appliances">Large Appliances</option>
+                <option value="screens">Screens & Accessories</option>
+                <option value="smart_home">Smart Home Devices</option>
+                <option value="gaming_devices">Gaming Devices & Accessories</option>
+                <option value="mobiles">Mobiles & Accessories</option>
+                <option value="extra_services">Extra Services</option>
+            </select>
+            <label>Enter Amount:</label>
+            <input type="number" placeholder="Amount" min="0" class="amount-input">
+        `;
+        container.appendChild(newSection);
+    }
+
+    function calculateDiscount() {
+        let totalDiscountGold = 0;
+        let totalAmountAfterDiscountGold = 0;
+        let totalDiscountBlue = 0;
+        let totalAmountAfterDiscountBlue = 0;
+
+        document.querySelectorAll(".section").forEach(sectionDiv => {
+            const section = sectionDiv.querySelector(".section-select").value;
+            const amount = parseFloat(sectionDiv.querySelector(".amount-input").value);
+
+            if (isNaN(amount) || amount <= 0) return;
+
+            const discountRateGold = discounts.gold[section];
+            const discountAmountGold = amount * discountRateGold;
+            totalDiscountGold += discountAmountGold;
+            totalAmountAfterDiscountGold += amount - discountAmountGold;
+
+            const discountRateBlue = discounts.blue[section];
+            const discountAmountBlue = amount * discountRateBlue;
+            totalDiscountBlue += discountAmountBlue;
+            totalAmountAfterDiscountBlue += amount - discountAmountBlue;
+        });
+
+        document.getElementById("totalDiscountGold").innerText = totalDiscountGold.toFixed(2);
+        document.getElementById("totalAmountGold").innerText = totalAmountAfterDiscountGold.toFixed(2);
+        document.getElementById("totalDiscountBlue").innerText = totalDiscountBlue.toFixed(2);
+        document.getElementById("totalAmountBlue").innerText = totalAmountAfterDiscountBlue.toFixed(2);
+    }
+</script>
+
+</body>
+</html>
